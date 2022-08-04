@@ -1,10 +1,12 @@
 import ij.plugin.PlugIn;
 import ij.ImagePlus;
+import ij.ImageStack;
+
 import ij.IJ;
 import ij.process.ImageProcessor;
 
 public class JoinChannels_ implements PlugIn{
-	private ImagePlus image;
+	private ImagePlus image, newOutput;
 	
 	public void run(String arg) {
 		this.image = IJ.getImage();
@@ -20,33 +22,34 @@ public class JoinChannels_ implements PlugIn{
 	}
 	
 	private void joinChannels(){		
-		int x, y, valorPixel[] = {0,0,0};
+		int x, y, valorPixel[] = {0,0,0};		
 		
-		Object[] rgbImage = image.getImageStack().getImageArray();	
+		ImageProcessor[] processadores = this.getProcessors();			
 		
-		ImagePlus redChannel = (ImagePlus) rgbImage[0];
-		ImagePlus greenChannel = (ImagePlus) rgbImage[1];
-		ImagePlus blueChannel = (ImagePlus) rgbImage[2];
-		
-		int width = redChannel.getWidth(), height=redChannel.getHeight();
-		
-		ImagePlus newOutput = IJ.createImage("RGB Joined image", "RGB", width, height, 1);
-		
-		ImageProcessor processador = newOutput.getProcessor();
-		ImageProcessor processadorR = redChannel.getProcessor();
-		ImageProcessor processadorG = greenChannel.getProcessor();
-		ImageProcessor processadorB = blueChannel.getProcessor();
-		
-		for (x = 0; x < this.image.getWidth(); x++) {
-			for (y = 0; y < this.image.getHeight(); y++) {
-				valorPixel[0] = processadorR.getPixel(x, y);
-				valorPixel[1] = processadorG.getPixel(x, y);
-				valorPixel[2] = processadorB.getPixel(x, y);
-				processador.putPixel(x, y, valorPixel);
+		for (x = 0; x < processadores[0].getWidth(); x++) {
+			for (y = 0; y < processadores[0].getHeight(); y++) {
+				valorPixel[0] = processadores[0].getPixel(x, y);
+				valorPixel[1] = processadores[1].getPixel(x, y);
+				valorPixel[2] = processadores[2].getPixel(x, y);
+				processadores[3].putPixel(x, y, valorPixel);
 			}
 		}
+		
 		this.image.close();
 		newOutput.show();		
+	}
+	
+	private ImageProcessor[] getProcessors() {	
+		ImageStack stack = image.getImageStack();		
+		ImageProcessor[] processadores = new ImageProcessor[4];
+		processadores[0] = stack.getProcessor(1);
+		processadores[1] = stack.getProcessor(2);
+		processadores[2] = stack.getProcessor(3);
+		
+		newOutput = IJ.createImage("RGB Joined image", "RGB", processadores[0].getWidth(), processadores[0].getHeight(), 1);
+		
+		processadores[3] = newOutput.getProcessor();
+		return processadores;
 	}
 
 }
