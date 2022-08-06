@@ -22,16 +22,16 @@ public class JoinChannels_ implements PlugIn{
 	}
 	
 	private void joinChannels(){		
-		int x, y, valorPixel[] = {0,0,0};		
+		int x, y, pixelValue[] = {0,0,0};		
 		
-		ImageProcessor[] processadores = this.getProcessors();			
+		ImageProcessor[] processors = this.getProcessors();			
 		
-		for (x = 0; x < processadores[0].getWidth(); x++) {
-			for (y = 0; y < processadores[0].getHeight(); y++) {
-				valorPixel[0] = processadores[0].getPixel(x, y);
-				valorPixel[1] = processadores[1].getPixel(x, y);
-				valorPixel[2] = processadores[2].getPixel(x, y);
-				processadores[3].putPixel(x, y, valorPixel);
+		for (x = 0; x < processors[0].getWidth(); x++) {
+			for (y = 0; y < processors[0].getHeight(); y++) {
+				pixelValue[0] = processors[0].getPixel(x, y);
+				pixelValue[1] = processors[1].getPixel(x, y);
+				pixelValue[2] = processors[2].getPixel(x, y);
+				processors[3].putPixel(x, y, pixelValue);
 			}
 		}
 		
